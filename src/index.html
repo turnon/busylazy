@@ -2,11 +2,24 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>lazy~~</title>
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="fullcalendar.min.css">
   </head>
   <body>
-    <h1>💖 Hello World!</h1>
-    <p>Welcome to your Electron application.</p>
+    <div id='calendar'></div>
+
+    <script src="fullcalendar.min.js"></script>
+    <script>
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth'
+        });
+        calendar.render();
+      });
+
+    </script>
   </body>
 </html>
