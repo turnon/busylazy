@@ -1,5 +1,6 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const fs = require('fs');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -11,6 +12,10 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
   });
 
   // and load the index.html of the app.
@@ -20,6 +25,18 @@ const createWindow = () => {
   if (process.env.DEV_TOOL) {
     mainWindow.webContents.openDevTools();
   }
+
+  const readDb = 'readDb'
+  const dbFile = 'dbusy.json'
+  ipcMain.on(readDb, (event, arg) => {
+    let content = JSON.parse(fs.readFileSync(dbFile))
+    event.reply(readDb, content)
+  })
+
+  ipcMain.on('writeDb', (event, arg) => {
+    fs.writeFile(dbFile, JSON.stringify(arg, null, 2), () => { })
+  })
+
 };
 
 // This method will be called when Electron has finished
@@ -46,7 +63,7 @@ app.on('activate', () => {
 
 try {
   require('electron-reloader')(module);
-} catch {}
+} catch { }
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
