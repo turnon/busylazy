@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>lazy~~</title>
-    <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="fullcalendar.min.css">
-  </head>
-  <body>
-    <div id='calendar'></div>
 
-    <script src="fullcalendar.min.js"></script>
-    <script>
+<head>
+  <meta charset="UTF-8">
+  <title>lazy~~</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="fullcalendar.min.css">
+</head>
 
-      document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth'
-        });
-        calendar.render();
+<body>
+  <div id='calendar'></div>
+
+  <script src="fullcalendar.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var calendarEl = document.getElementById('calendar');
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth'
       });
+      calendar.render();
+    });
+  </script>
+</body>
 
-    </script>
-  </body>
 </html>
