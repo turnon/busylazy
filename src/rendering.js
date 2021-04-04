@@ -34,6 +34,20 @@
     }).catch(console.error);
   }
 
+  // 选定事情后回调
+  function clickEvent(info) {
+    prompt({
+      title: "remove event",
+      label: info.event.id,
+      type: 'input',
+      height: 200
+    }).then((confirmation) => {
+      if (confirmation === 'y') {
+        info.event.remove()
+      }
+    }).catch(console.error);
+  }
+
   // 创建日历
   let calendar;
   document.addEventListener('DOMContentLoaded', function () {
@@ -42,6 +56,7 @@
       {
         initialView: 'dayGridMonth',
         selectable: true,
+        eventClick: clickEvent,
         select: selectDate
       }
     );
