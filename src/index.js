@@ -28,7 +28,7 @@ const createWindow = () => {
   }
 
   const readDb = 'readDb'
-  const dbFile = 'dbusy.json'
+  const dbFile = '.dbusy.json'
   ipcMain.on(readDb, (event, arg) => {
     let content = JSON.parse(fs.readFileSync(dbFile))
     event.reply(readDb, content)
