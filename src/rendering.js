@@ -85,6 +85,17 @@
     }).catch(console.error);
   }
 
+  // 移动事情后回调
+  function dropEvent(info) {
+    db.removeEvent(info.oldEvent.id)
+    db.addEvent({
+      id: convertLabel(info.event) + " : " + info.event.title,
+      title: info.event.title,
+      start: info.event.startStr,
+      end: info.event.endStr,
+    })
+  }
+
   // 创建日历
   let calendar;
   document.addEventListener('DOMContentLoaded', function () {
@@ -95,6 +106,8 @@
           initialView: 'dayGridMonth',
           events: Object.values(jsonData.schedule),
           selectable: true,
+          editable: true,
+          eventDrop: dropEvent,
           eventClick: clickEvent,
           select: selectDate
         }
