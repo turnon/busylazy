@@ -104,6 +104,8 @@
         document.getElementById('calendar'),
         {
           initialView: 'dayGridMonth',
+          contentHeight: 800,
+          dayMaxEvents: true,
           events: Object.values(jsonData.schedule),
           selectable: true,
           editable: true,
