@@ -85,9 +85,9 @@
     }).catch(console.error);
   }
 
-  // 移动事情后回调
-  function dropEvent(info) {
-    db.removeEvent(info.oldEvent.id)
+  // 移动、伸缩事情后回调
+  function moveEvent(info) {
+    db.removeEvent(convertLabel(info.oldEvent) + " : " + info.oldEvent.title)
     db.addEvent({
       id: convertLabel(info.event) + " : " + info.event.title,
       title: info.event.title,
@@ -107,7 +107,10 @@
           events: Object.values(jsonData.schedule),
           selectable: true,
           editable: true,
-          eventDrop: dropEvent,
+          eventResizableFromStart: true,
+          eventDurationEditable: true,
+          eventResize: moveEvent,
+          eventDrop: moveEvent,
           eventClick: clickEvent,
           select: selectDate
         }
