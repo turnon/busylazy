@@ -1,7 +1,7 @@
 {
-  "name": "electry",
-  "productName": "electry",
-  "version": "1.0.0",
+  "name": "busylazy",
+  "productName": "busylazy",
+  "version": "1.1.0",
   "description": "My Electron application description",
   "main": "src/index.js",
   "scripts": {
@@ -21,7 +21,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "electry"
+            "name": "busylazy"
           }
         },
         {
