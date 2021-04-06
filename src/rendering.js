@@ -11,8 +11,27 @@
       ipcRenderer.send(readDb, null)
       ipcRenderer.on(readDb, (event, jsonData) => {
         json = jsonData
-        callback(jsonData)
+        callback(unzipData(jsonData))
       })
+    }
+
+    function unzipData(jsonData) {
+      jsonData = JSON.parse(JSON.stringify(jsonData))
+      let schedule = jsonData.schedule,
+        events = []
+      for (let key in schedule) {
+        let detail = schedule[key] || {},
+          keyArr = key.split(' | '),
+          endAt = detail.end || keyArr[0]
+        events.push({
+          id: key,
+          title: keyArr[1],
+          start: keyArr[0],
+          end: endAt,
+        })
+      }
+      jsonData.events = events
+      return jsonData
     }
 
     function writeDb() {
@@ -69,7 +88,7 @@
           return
         }
         let event = {
-          id: label + ' : ' + eventName,
+          id: linfo.startStr + ' | ' + eventName,
           title: eventName,
           start: info.startStr,
           end: info.endStr,
@@ -99,9 +118,9 @@
 
   // 移动、伸缩事情后回调
   function moveEvent(info) {
-    db.removeEvent(convertLabel(info.oldEvent) + ' : ' + info.oldEvent.title)
+    db.removeEvent(info.oldEvent.startStr + ' | ' + info.oldEvent.title)
     db.addEvent({
-      id: convertLabel(info.event) + ' : ' + info.event.title,
+      id: info.event.startStr + ' | ' + info.event.title,
       title: info.event.title,
       start: info.event.startStr,
       end: info.event.endStr,
@@ -118,7 +137,7 @@
           initialView: 'dayGridMonth',
           contentHeight: 800,
           dayMaxEvents: true,
-          events: Object.values(jsonData.schedule),
+          events: jsonData.events,
           selectable: true,
           editable: true,
           eventResizableFromStart: true,
