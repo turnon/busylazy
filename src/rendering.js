@@ -1,6 +1,7 @@
-;(function () {
+; (function () {
   const { ipcRenderer, remote } = require('electron')
   const prompt = require('electron-prompt')
+  const scheduleKeySep = ' | '
 
   //数据库交互
   let db = (function () {
@@ -21,7 +22,7 @@
         events = []
       for (let key in schedule) {
         let detail = schedule[key] || {},
-          keyArr = key.split(' | '),
+          keyArr = key.split(scheduleKeySep),
           endAt = detail.end || keyArr[0]
         events.push({
           id: key,
@@ -40,7 +41,7 @@
     }
 
     function addEvent(e) {
-      json.schedule[e.id] = e
+      json.schedule[e.id] = { end: e.end }
       writeDb()
     }
 
@@ -88,7 +89,7 @@
           return
         }
         let event = {
-          id: linfo.startStr + ' | ' + eventName,
+          id: info.startStr + scheduleKeySep + eventName,
           title: eventName,
           start: info.startStr,
           end: info.endStr,
@@ -101,16 +102,17 @@
 
   // 选定事情后回调
   function clickEvent(info) {
+    let event = info.event
     prompt({
       title: 'remove event',
-      label: info.event.id,
+      label: convertLabel(event) + ' : ' + event.title,
       type: 'input',
       height: 200,
     })
       .then((confirmation) => {
         if (confirmation === 'y') {
-          info.event.remove()
-          db.removeEvent(info.event.id)
+          event.remove()
+          db.removeEvent(event.id)
         }
       })
       .catch(console.error)
@@ -118,9 +120,9 @@
 
   // 移动、伸缩事情后回调
   function moveEvent(info) {
-    db.removeEvent(info.oldEvent.startStr + ' | ' + info.oldEvent.title)
+    db.removeEvent(info.oldEvent.startStr + scheduleKeySep + info.oldEvent.title)
     db.addEvent({
-      id: info.event.startStr + ' | ' + info.event.title,
+      id: info.event.startStr + scheduleKeySep + info.event.title,
       title: info.event.title,
       start: info.event.startStr,
       end: info.event.endStr,
