@@ -1,6 +1,6 @@
-(function () {
+;(function () {
   const { ipcRenderer, remote } = require('electron')
-  const prompt = require('electron-prompt');
+  const prompt = require('electron-prompt')
 
   //数据库交互
   let db = (function () {
@@ -33,17 +33,25 @@
     return {
       readDb: readDb,
       addEvent: addEvent,
-      removeEvent: removeEvent
+      removeEvent: removeEvent,
     }
-  }())
+  })()
 
   // 拼接对话框中的日期
   function convertLabel(info) {
-    let deadline = new Date(info.end.getTime() - (24 * 60 * 60 * 1000));
+    let deadline = new Date(info.end.getTime() - 24 * 60 * 60 * 1000)
     if (info.start.toString() === deadline.toString()) {
       return info.startStr
     }
-    return info.startStr + " ~ " + deadline.getFullYear() + "-" + (deadline.getMonth() + 1) + "-" + deadline.getDate()
+    return (
+      info.startStr +
+      ' ~ ' +
+      deadline.getFullYear() +
+      '-' +
+      (deadline.getMonth() + 1) +
+      '-' +
+      deadline.getDate()
+    )
   }
 
   // 选定日期后回调
@@ -51,45 +59,49 @@
     let label = convertLabel(info)
 
     prompt({
-      title: "add event",
+      title: 'add event',
       label: label,
       type: 'input',
-      height: 200
-    }).then((eventName) => {
-      if (eventName === null || eventName === '' || eventName === undefined) {
-        return
-      }
-      let event = {
-        id: label + " : " + eventName,
-        title: eventName,
-        start: info.startStr,
-        end: info.endStr,
-      }
-      calendar.addEvent(event)
-      db.addEvent(event)
-    }).catch(console.error);
+      height: 200,
+    })
+      .then((eventName) => {
+        if (eventName === null || eventName === '' || eventName === undefined) {
+          return
+        }
+        let event = {
+          id: label + ' : ' + eventName,
+          title: eventName,
+          start: info.startStr,
+          end: info.endStr,
+        }
+        calendar.addEvent(event)
+        db.addEvent(event)
+      })
+      .catch(console.error)
   }
 
   // 选定事情后回调
   function clickEvent(info) {
     prompt({
-      title: "remove event",
+      title: 'remove event',
       label: info.event.id,
       type: 'input',
-      height: 200
-    }).then((confirmation) => {
-      if (confirmation === 'y') {
-        info.event.remove()
-        db.removeEvent(info.event.id)
-      }
-    }).catch(console.error);
+      height: 200,
+    })
+      .then((confirmation) => {
+        if (confirmation === 'y') {
+          info.event.remove()
+          db.removeEvent(info.event.id)
+        }
+      })
+      .catch(console.error)
   }
 
   // 移动、伸缩事情后回调
   function moveEvent(info) {
-    db.removeEvent(convertLabel(info.oldEvent) + " : " + info.oldEvent.title)
+    db.removeEvent(convertLabel(info.oldEvent) + ' : ' + info.oldEvent.title)
     db.addEvent({
-      id: convertLabel(info.event) + " : " + info.event.title,
+      id: convertLabel(info.event) + ' : ' + info.event.title,
       title: info.event.title,
       start: info.event.startStr,
       end: info.event.endStr,
@@ -97,7 +109,7 @@
   }
 
   // 创建日历
-  let calendar;
+  let calendar
   document.addEventListener('DOMContentLoaded', function () {
     db.readDb((jsonData) => {
       calendar = new FullCalendar.Calendar(
@@ -114,10 +126,10 @@
           eventResize: moveEvent,
           eventDrop: moveEvent,
           eventClick: clickEvent,
-          select: selectDate
+          select: selectDate,
         }
-      );
-      calendar.render();
+      )
+      calendar.render()
     })
-  });
+  })
 })()
