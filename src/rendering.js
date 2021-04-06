@@ -142,7 +142,7 @@
         document.getElementById('calendar'),
         {
           initialView: 'dayGridMonth',
-          contentHeight: 800,
+          contentHeight: 780,
           dayMaxEvents: true,
           events: jsonData.events,
           selectable: true,

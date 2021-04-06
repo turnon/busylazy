@@ -7,10 +7,23 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
   app.quit();
 }
 
+const createComm = () => {
+  const readDb = 'readDb'
+  const dbFile = path.join(app.getPath('home'), '.dbusylazy', 'data.json')
+  ipcMain.on(readDb, (event, arg) => {
+    let content = JSON.parse(fs.readFileSync(dbFile))
+    event.reply(readDb, content)
+  })
+
+  ipcMain.on('writeDb', (event, arg) => {
+    fs.writeFile(dbFile, JSON.stringify(arg, null, 2), () => { })
+  })
+}
+
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
+    width: 1000,
     height: 1000,
     webPreferences: {
       enableRemoteModule: true,
@@ -27,17 +40,11 @@ const createWindow = () => {
     mainWindow.webContents.openDevTools();
   }
 
-  const readDb = 'readDb'
-  const dbFile = path.join(app.getPath('home'), '.dbusylazy', 'data.json')
-  ipcMain.on(readDb, (event, arg) => {
-    let content = JSON.parse(fs.readFileSync(dbFile))
-    event.reply(readDb, content)
-  })
+  // 无菜单栏
+  mainWindow.setMenu(null)
 
-  ipcMain.on('writeDb', (event, arg) => {
-    fs.writeFile(dbFile, JSON.stringify(arg, null, 2), () => { })
-  })
-
+  // main与render通讯
+  createComm()
 };
 
 // This method will be called when Electron has finished
