@@ -37,6 +37,11 @@
 
     function writeDb() {
       json.updated = new Date()
+      let schedule = {}
+      Object.keys(json.schedule).sort().reverse().forEach((key) => {
+        schedule[key] = json.schedule[key]
+      })
+      json.schedule = schedule
       ipcRenderer.send('writeDb', json)
     }
 
