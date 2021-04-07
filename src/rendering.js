@@ -1,4 +1,4 @@
-; (function () {
+;(function () {
   const { ipcRenderer, remote } = require('electron')
   const prompt = require('electron-prompt')
   const scheduleKeySep = ' | '
@@ -38,9 +38,12 @@
     function writeDb() {
       json.updated = new Date()
       let schedule = {}
-      Object.keys(json.schedule).sort().reverse().forEach((key) => {
-        schedule[key] = json.schedule[key]
-      })
+      Object.keys(json.schedule)
+        .sort()
+        .reverse()
+        .forEach((key) => {
+          schedule[key] = json.schedule[key]
+        })
       json.schedule = schedule
       ipcRenderer.send('writeDb', json)
     }
@@ -138,23 +141,20 @@
   let calendar
   document.addEventListener('DOMContentLoaded', function () {
     db.readDb((jsonData) => {
-      calendar = new FullCalendar.Calendar(
-        document.getElementById('calendar'),
-        {
-          initialView: 'dayGridMonth',
-          contentHeight: 780,
-          dayMaxEvents: true,
-          events: jsonData.events,
-          selectable: true,
-          editable: true,
-          eventResizableFromStart: true,
-          eventDurationEditable: true,
-          eventResize: moveEvent,
-          eventDrop: moveEvent,
-          eventClick: clickEvent,
-          select: selectDate,
-        }
-      )
+      calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+        initialView: 'dayGridMonth',
+        contentHeight: 780,
+        dayMaxEvents: true,
+        events: jsonData.events,
+        selectable: true,
+        editable: true,
+        eventResizableFromStart: true,
+        eventDurationEditable: true,
+        eventResize: moveEvent,
+        eventDrop: moveEvent,
+        eventClick: clickEvent,
+        select: selectDate,
+      })
       calendar.render()
     })
   })
