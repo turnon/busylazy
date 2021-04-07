@@ -17,7 +17,7 @@ const createComm = () => {
   })
 
   ipcMain.on('writeDb', (event, arg) => {
-    fs.writeFile(dbFile, JSON.stringify(arg, null, 2), () => {})
+    fs.writeFile(dbFile, JSON.stringify(arg, null, 2), () => { })
   })
 }
 
@@ -25,7 +25,7 @@ const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1000,
-    height: 1000,
+    height: 940,
     webPreferences: {
       enableRemoteModule: true,
       nodeIntegration: true,
@@ -72,7 +72,7 @@ app.on('activate', () => {
 
 try {
   require('electron-reloader')(module)
-} catch {}
+} catch { }
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.

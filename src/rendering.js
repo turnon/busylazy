@@ -1,4 +1,4 @@
-;(function () {
+; (function () {
   const { ipcRenderer, remote } = require('electron')
   const prompt = require('electron-prompt')
   const scheduleKeySep = ' | '
@@ -165,9 +165,9 @@
         select: selectDate,
         datesSet: datesSet,
       })
-      calendar.render()
+      calendar.render();
       // 跳转日期
-      ;['prev', 'today', 'next'].forEach((action) => {
+      ['prev', 'today', 'next'].forEach((action) => {
         document.getElementById('go' + action).addEventListener('click', () => {
           console.log(action)
           calendar[action]()

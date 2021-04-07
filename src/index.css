@@ -1,38 +1,39 @@
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  /* margin: auto; */
-  /* max-width: 38rem; */
-  padding: 2rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    /* margin: auto; */
+    /* max-width: 38rem; */
+    padding: 2rem;
 }
 
 #main {
-  width: 38rem;
-  float: left;
+    width: 38rem;
+    float: left;
 }
 
 #side {
-  float: left;
-  margin-left: 1.5rem;
-  margin-top: -0.6rem;
-  color: cadetblue;
+    float: left;
+    margin-left: 1.5rem;
+    margin-top: -0.6rem;
+    color: cadetblue;
+    font-style: italic;
 }
 
 #year-month {
-  font-size: xxx-large;
-  font-weight: bolder;
+    font-size: xxx-large;
+    font-weight: bolder;
 }
 
 #year-month-sep {
-  font-size: xx-large;
-  vertical-align: 0.5rem;
+    font-size: xx-large;
+    vertical-align: 0.5rem;
 }
 
 nav {
-  margin-left: 0.2rem;
-  margin-top: 0.2rem;
+    margin-left: 0.2rem;
+    margin-top: 0.2rem;
 }
 
 nav span:hover {
-  cursor: pointer;
-  color: gray;
+    cursor: pointer;
+    color: gray;
 }
