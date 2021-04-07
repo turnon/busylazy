@@ -147,32 +147,59 @@
 
   // 创建日历
   let calendar
+  function createCalendar(jsonData) {
+    calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+      initialView: 'dayGridMonth',
+      headerToolbar: false,
+      contentHeight: 780,
+      dayMaxEvents: true,
+      events: jsonData.events,
+      selectable: true,
+      editable: true,
+      droppable: true,
+      eventResizableFromStart: true,
+      eventDurationEditable: true,
+      eventResize: moveEvent,
+      eventDrop: moveEvent,
+      eventClick: clickEvent,
+      select: selectDate,
+      datesSet: datesSet,
+    })
+    calendar.render();
+    // 跳转日期
+    ['prev', 'today', 'next'].forEach((action) => {
+      document.getElementById('go' + action).addEventListener('click', () => {
+        console.log(action)
+        calendar[action]()
+      })
+    })
+  }
+
+  // 创建暂存区
+  let pending
+  function createPending(jsonData) {
+    pending = new FullCalendar.Calendar(document.getElementById('pending'), {
+      initialView: 'dayGrid',
+      headerToolbar: false,
+      dayHeaders: false,
+      contentHeight: 480,
+      dayMaxEvents: true,
+      dayCount: 1,
+      // events: jsonData.events,
+      selectable: true,
+      editable: true,
+      droppable: true,
+      select: selectDate,
+    })
+    pending.render();
+    pending.gotoDate("2999-01-01")
+  }
+
+  // 初始化页面
   document.addEventListener('DOMContentLoaded', function () {
     db.readDb((jsonData) => {
-      calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
-        initialView: 'dayGridMonth',
-        headerToolbar: false,
-        contentHeight: 780,
-        dayMaxEvents: true,
-        events: jsonData.events,
-        selectable: true,
-        editable: true,
-        eventResizableFromStart: true,
-        eventDurationEditable: true,
-        eventResize: moveEvent,
-        eventDrop: moveEvent,
-        eventClick: clickEvent,
-        select: selectDate,
-        datesSet: datesSet,
-      })
-      calendar.render();
-      // 跳转日期
-      ['prev', 'today', 'next'].forEach((action) => {
-        document.getElementById('go' + action).addEventListener('click', () => {
-          console.log(action)
-          calendar[action]()
-        })
-      })
+      createCalendar(jsonData)
+      createPending(jsonData)
     })
   })
 })()
