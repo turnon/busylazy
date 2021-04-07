@@ -1,6 +1,38 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   /* margin: auto; */
-  max-width: 38rem;
+  /* max-width: 38rem; */
   padding: 2rem;
+}
+
+#main {
+  width: 38rem;
+  float: left;
+}
+
+#side {
+  float: left;
+  margin-left: 1.5rem;
+  margin-top: -0.6rem;
+  color: cadetblue;
+}
+
+#year-month {
+  font-size: xxx-large;
+  font-weight: bolder;
+}
+
+#year-month-sep {
+  font-size: xx-large;
+  vertical-align: 0.5rem;
+}
+
+nav {
+  margin-left: 0.2rem;
+  margin-top: 0.2rem;
+}
+
+nav span:hover {
+  cursor: pointer;
+  color: gray;
 }

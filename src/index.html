@@ -8,7 +8,20 @@
   </head>
 
   <body>
-    <div id="calendar"></div>
+    <div id="main">
+      <div id="calendar"></div>
+    </div>
+
+    <div id="side">
+      <div id="year-month">
+        <span id="year"></span> <span id="year-month-sep">/</span>
+        <span id="month"></span>
+      </div>
+      <nav>
+        <span id="goprev">prev</span> / <span id="gotoday">today</span> /
+        <span id="gonext">next</span>
+      </nav>
+    </div>
 
     <script src="fullcalendar.min.js"></script>
     <script src="rendering.js"></script>

@@ -137,12 +137,21 @@
     })
   }
 
+  function datesSet(info) {
+    let now = calendar.getDate(),
+      month = now.getMonth() + 1,
+      monthStr = month < 10 ? '0' + month : month
+    document.getElementById('year').innerText = now.getFullYear()
+    document.getElementById('month').innerText = monthStr
+  }
+
   // 创建日历
   let calendar
   document.addEventListener('DOMContentLoaded', function () {
     db.readDb((jsonData) => {
       calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
         initialView: 'dayGridMonth',
+        headerToolbar: false,
         contentHeight: 780,
         dayMaxEvents: true,
         events: jsonData.events,
@@ -154,8 +163,16 @@
         eventDrop: moveEvent,
         eventClick: clickEvent,
         select: selectDate,
+        datesSet: datesSet,
       })
       calendar.render()
+      // 跳转日期
+      ;['prev', 'today', 'next'].forEach((action) => {
+        document.getElementById('go' + action).addEventListener('click', () => {
+          console.log(action)
+          calendar[action]()
+        })
+      })
     })
   })
 })()
