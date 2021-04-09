@@ -32,10 +32,24 @@
       writeDb()
     }
 
+    function addPending(e) {
+      json.pending.push({ title: e.title })
+      writeDb()
+    }
+
+    function removePending(e) {
+      json.pending = json.pending.filter((oldE) => {
+        return oldE.title !== e.title
+      })
+      writeDb()
+    }
+
     return {
       readDb: readDb,
       addEvent: addEvent,
       removeEvent: removeEvent,
+      addPending: addPending,
+      removePending: removePending,
     }
   })()
 
@@ -165,6 +179,47 @@
       }
     })
 
+    // 选定日期后回调
+    function selectDate(info) {
+      prompt({
+        title: 'add pending',
+        type: 'input',
+        height: 200,
+      })
+        .then((eventName) => {
+          if (eventName === null || eventName === '' || eventName === undefined) {
+            return
+          }
+          let event = {
+            title: eventName,
+            start: info.startStr,
+            end: info.endStr,
+          }
+          db.addPending(event)
+          event.id = eventId(event)
+          pending.addEvent(event)
+        })
+        .catch(console.error)
+    }
+
+    // 选定事情后回调
+    function clickEvent(info) {
+      let event = info.event
+      prompt({
+        title: 'remove pending',
+        label: event.title,
+        type: 'input',
+        height: 200,
+      })
+        .then((confirmation) => {
+          if (confirmation === 'y') {
+            event.remove()
+            db.removePending(event)
+          }
+        })
+        .catch(console.error)
+    }
+
     pending = new FullCalendar.Calendar(document.getElementById('pending'), {
       initialView: 'dayGrid',
       headerToolbar: false,
@@ -176,7 +231,8 @@
       selectable: true,
       editable: true,
       droppable: true,
-      // select: selectDate,
+      select: selectDate,
+      eventClick: clickEvent,
     })
     pending.render()
     pending.gotoDate(start)
