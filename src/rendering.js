@@ -11,11 +11,7 @@
       ipcRenderer.send(readDb, null)
       ipcRenderer.on(readDb, (event, jsonData) => {
         json = jsonData
-        jsonData.schedule = jsonData.schedule.map((e) => {
-          e.id = eventId(e)
-          return e
-        })
-        callback(jsonData)
+        callback(JSON.parse(JSON.stringify(jsonData)))
       })
     }
 
@@ -118,14 +114,22 @@
       db.addEvent(info.event)
     }
 
-    let buttons = ['prev', 'today', 'next']
+    let buttons = ['prev', 'today', 'next'],
+      events = jsonData.schedule.map((e) => {
+        return {
+          id: eventId(e),
+          title: e.title,
+          start: e.start,
+          end: e.end,
+        }
+      })
 
     calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
       initialView: 'dayGridMonth',
       headerToolbar: false,
       contentHeight: 780,
       dayMaxEvents: true,
-      events: jsonData.schedule,
+      events: events,
       selectable: true,
       editable: true,
       droppable: true,
@@ -150,6 +154,17 @@
   // 创建暂存区
   let pending
   function createPending(jsonData) {
+    const start = '2999-01-01',
+      end = '2999-01-02'
+
+    let events = jsonData.pending.map((e) => {
+      return {
+        title: e.title,
+        start: start,
+        end: end,
+      }
+    })
+
     pending = new FullCalendar.Calendar(document.getElementById('pending'), {
       initialView: 'dayGrid',
       headerToolbar: false,
@@ -157,14 +172,14 @@
       contentHeight: 480,
       dayMaxEvents: true,
       dayCount: 1,
-      // events: jsonData.events,
+      events: events,
       selectable: true,
       editable: true,
       droppable: true,
       // select: selectDate,
     })
     pending.render()
-    pending.gotoDate('2999-01-01')
+    pending.gotoDate(start)
   }
 
   // 初始化页面
