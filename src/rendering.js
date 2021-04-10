@@ -1,4 +1,4 @@
-;(function () {
+; (function () {
   const { ipcRenderer, remote } = require('electron')
   const prompt = require('electron-prompt')
 
@@ -128,6 +128,16 @@
       db.addEvent(info.event)
     }
 
+    // 调离事情后回调
+    function transferEvent(info) {
+      db.removeEvent(info.event)
+    }
+
+    // 调入事情后回调
+    function receiverEvent(info) {
+      db.addEvent(info.event)
+    }
+
     let buttons = ['prev', 'today', 'next'],
       events = jsonData.schedule.map((e) => {
         return {
@@ -151,6 +161,8 @@
       eventDurationEditable: true,
       eventResize: moveEvent,
       eventDrop: moveEvent,
+      eventLeave: transferEvent,
+      eventReceive: receiverEvent,
       eventClick: clickEvent,
       select: selectDate,
       datesSet: datesSet,
@@ -220,6 +232,16 @@
         .catch(console.error)
     }
 
+    // 调离事情后回调
+    function transferEvent(info) {
+      db.removePending(info.event)
+    }
+
+    // 调入事情后回调
+    function receiverEvent(info) {
+      db.addPending(info.event)
+    }
+
     pending = new FullCalendar.Calendar(document.getElementById('pending'), {
       initialView: 'dayGrid',
       headerToolbar: false,
@@ -233,6 +255,8 @@
       droppable: true,
       select: selectDate,
       eventClick: clickEvent,
+      eventLeave: transferEvent,
+      eventReceive: receiverEvent,
     })
     pending.render()
     pending.gotoDate(start)
