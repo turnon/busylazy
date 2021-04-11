@@ -1,5 +1,0 @@
-{
-    "prettier.semi": false,
-    "prettier.printWidth": 120,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-}
