@@ -17,10 +17,7 @@
                         display: 'inline-block',
                     }"
                 >
-                    <Cal
-                        :events="events"
-                        v-if="readEvents"
-                    />
+                    <Cal :events="events" />
                 </div>
             </div>
         </div>
@@ -53,14 +50,13 @@ export default {
     },
     data() {
         return {
-            showCalendars: true,
+            showCalendars: false,
             calerdarsLayout: {
                 horizon: 1,
                 vertical: 1,
             },
             layoutOptions: ["1x1", "2x1", "3x1", "1x2", "2x2", "3x2"],
             calendarWidth: "90%",
-            readEvents: false,
             events: [],
         }
     },
@@ -70,20 +66,25 @@ export default {
         ipcRenderer.on(readDb, (_, jsonData) => {
             console.log(`${new Date()}: Fetched jsonData`)
             this.events = scheduleToEvents(jsonData.schedule)
-            this.readEvents = true
+            this.reloadCals()
         })
     },
     methods: {
         changeLayout(layoutStr) {
+            this.reloadCals(() => {
+                let layoutArr = layoutStr.split("x")
+                this.calerdarsLayout.horizon = parseInt(layoutArr[0])
+                this.calerdarsLayout.vertical = parseInt(layoutArr[1])
+                this.calendarWidth = `${90 / layoutArr[0]}%`
+            })
+        },
+        reloadCals(fn) {
             this.showCalendars = false
-            let layoutArr = layoutStr.split("x")
-            this.calerdarsLayout.horizon = parseInt(layoutArr[0])
-            this.calerdarsLayout.vertical = parseInt(layoutArr[1])
-            this.calendarWidth = `${90 / layoutArr[0]}%`
+            fn && fn()
             this.$nextTick(() => {
                 this.showCalendars = true
             })
-        }
+        },
     },
 }
 </script>
