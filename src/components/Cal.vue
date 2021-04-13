@@ -69,7 +69,7 @@ export default {
 
 .nav {
     float: right;
-    display: inline-block;
+    display: inline;
 
     span:hover {
         cursor: pointer;
