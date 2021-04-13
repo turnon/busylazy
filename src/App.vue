@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <div>
-            <span v-for="l in layoutOptions" :key="l" @click="changeLayout(l)">
+            <span v-for="l in layout.options" :key="l" @click="changeLayout(l)">
                 {{ l }}
             </span>
         </div>
@@ -17,7 +17,7 @@
                         display: 'inline-block',
                     }"
                 >
-                    <Cal :events="events" :seq="incrCalSeq()" />
+                    <Cal :events="events" :seq="incrCalSeq()" :cmd="cmd" />
                 </div>
             </div>
         </div>
@@ -57,7 +57,11 @@ export default {
                 horizon: 1,
                 vertical: 1,
             },
-            layoutOptions: ["1x1", "2x1", "3x1", "1x2", "2x2", "3x2"],
+            layout: {
+                options: ["1x1", "2x1", "3x1", "1x2", "2x2", "3x2"],
+                current: "1x1",
+            },
+            cmd: { action: null, args: null },
             calendarWidth: "90%",
             events: [],
         }
@@ -74,10 +78,12 @@ export default {
     methods: {
         changeLayout(layoutStr) {
             this.reloadCals(() => {
+                this.layout.current = layoutStr
                 let layoutArr = layoutStr.split("x")
                 this.calerdarsLayout.horizon = parseInt(layoutArr[0])
                 this.calerdarsLayout.vertical = parseInt(layoutArr[1])
                 this.calendarWidth = `${90 / layoutArr[0]}%`
+                this.cmd = { action: "changeDate", args: ["2021-02-01"] }
             })
         },
         incrCalSeq() {

@@ -29,6 +29,12 @@ export default {
             type: Number,
             default: 0,
         },
+        cmd: {
+            type: Object,
+            default: function() {
+                return { action: null, args: null }
+            },
+        },
         events: {
             type: Array,
             default: function() {
@@ -61,6 +67,18 @@ export default {
         },
         getApi: function() {
             return this.$refs.fullCalendar.getApi()
+        },
+        exeCmd: function() {
+            console.log(1234, this.cmd, 5678)
+            this.cmd.action && this.getApi().gotoDate(this.cmd.args[0])
+        },
+    },
+    mounted() {
+        this.exeCmd()
+    },
+    watch: {
+        cmd() {
+            this.exeCmd()
         },
     },
 }
