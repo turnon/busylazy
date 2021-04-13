@@ -25,10 +25,6 @@ export default {
         FullCalendar,
     },
     props: {
-        initDate: {
-            type: String,
-            default: "2990-01-01",
-        },
         events: {
             type: Array,
             default: function() {
@@ -51,10 +47,6 @@ export default {
         }
     },
 
-    mounted() {
-        console.log(this.initDate, 123)
-    },
-
     methods: {
         datesSet: function() {
             let now = this.getApi().getDate(),
@@ -67,13 +59,6 @@ export default {
             return this.$refs.fullCalendar.getApi()
         },
     },
-
-    // watch: {
-    //     initDate: (val) => {
-    //         console.log(val)
-    //         this.getApi.gotoDate(val)
-    //     },
-    // },
 }
 </script>
 
