@@ -17,7 +17,7 @@
                         display: 'inline-block',
                     }"
                 >
-                    <Cal :events="events" />
+                    <Cal :events="events" :seq="incrCalSeq()" />
                 </div>
             </div>
         </div>
@@ -42,6 +42,8 @@ function scheduleToEvents(schedule) {
         }
     })
 }
+
+let calSeq = 0
 
 export default {
     name: "App",
@@ -78,8 +80,12 @@ export default {
                 this.calendarWidth = `${90 / layoutArr[0]}%`
             })
         },
+        incrCalSeq() {
+            return calSeq++
+        },
         reloadCals(fn) {
             this.showCalendars = false
+            calSeq = 0
             fn && fn()
             this.$nextTick(() => {
                 this.showCalendars = true

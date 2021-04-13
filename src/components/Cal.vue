@@ -25,6 +25,10 @@ export default {
         FullCalendar,
     },
     props: {
+        seq: {
+            type: Number,
+            default: 0,
+        },
         events: {
             type: Array,
             default: function() {
