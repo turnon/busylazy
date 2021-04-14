@@ -43,6 +43,34 @@ function scheduleToEvents(schedule) {
     })
 }
 
+function dateStr(d) {
+    let m = d.getMonth() + 1
+    m = m < 10 ? `0${m}` : `${m}`
+    return `${d.getFullYear()}-${m}-01`
+}
+
+function generateDates(firstDate, times) {
+    let dates = [new Date(firstDate)]
+    while (times > 0) {
+        let lastDate = dates[dates.length - 1]
+        if (lastDate.getMonth() == 11) {
+            lastDate = new Date(lastDate.getFullYear() + 1, 0, 1)
+        } else {
+            lastDate = new Date(
+                lastDate.getFullYear(),
+                lastDate.getMonth() + 1,
+                1
+            )
+        }
+        dates.push(lastDate)
+        times = times - 1
+    }
+    dates = dates.map((d) => {
+        return dateStr(d)
+    })
+    return dates
+}
+
 let calSeq = 0
 
 export default {
@@ -57,6 +85,7 @@ export default {
                 horizon: 1,
                 vertical: 1,
             },
+            dates: [dateStr(new Date())],
             layout: {
                 options: ["1x1", "2x1", "3x1", "1x2", "2x2", "3x2"],
                 current: "1x1",
@@ -72,6 +101,7 @@ export default {
         ipcRenderer.on(readDb, (_, jsonData) => {
             console.log(`${new Date()}: Fetched jsonData`)
             this.events = scheduleToEvents(jsonData.schedule)
+            this.cmd = { action: "changeDate", args: this.dates }
             this.reloadCals()
         })
     },
@@ -79,11 +109,17 @@ export default {
         changeLayout(layoutStr) {
             this.reloadCals(() => {
                 this.layout.current = layoutStr
-                let layoutArr = layoutStr.split("x")
-                this.calerdarsLayout.horizon = parseInt(layoutArr[0])
-                this.calerdarsLayout.vertical = parseInt(layoutArr[1])
-                this.calendarWidth = `${90 / layoutArr[0]}%`
-                this.cmd = { action: "changeDate", args: ["2021-02-01"] }
+                let layoutArr = layoutStr.split("x"),
+                    h = parseInt(layoutArr[0]),
+                    v = parseInt(layoutArr[1])
+                this.calerdarsLayout.horizon = h
+                this.calerdarsLayout.vertical = v
+                this.calendarWidth = `${90 / h}%`
+                this.dates = generateDates(this.dates[0], h * v)
+                this.cmd = {
+                    action: "changeDate",
+                    args: this.dates,
+                }
             })
         },
         incrCalSeq() {

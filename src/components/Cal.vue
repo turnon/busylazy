@@ -20,6 +20,14 @@ import FullCalendar from "@fullcalendar/vue"
 import dayGridPlugin from "@fullcalendar/daygrid"
 import interactionPlugin from "@fullcalendar/interaction"
 
+let cmdExecutor = (function() {
+    return {
+        changeDate(dates) {
+            this.getApi().gotoDate(dates[this.seq])
+        },
+    }
+})()
+
 export default {
     components: {
         FullCalendar,
@@ -70,7 +78,8 @@ export default {
         },
         exeCmd: function() {
             console.log(1234, this.cmd, 5678)
-            this.cmd.action && this.getApi().gotoDate(this.cmd.args[0])
+            this.cmd.action &&
+                cmdExecutor[this.cmd.action].call(this, this.cmd.args)
         },
     },
     mounted() {
