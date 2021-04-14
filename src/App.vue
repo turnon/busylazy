@@ -17,7 +17,12 @@
                         display: 'inline-block',
                     }"
                 >
-                    <Cal :events="events" :seq="incrCalSeq()" :cmd="cmd" />
+                    <Cal
+                        :events="events"
+                        :seq="incrCalSeq()"
+                        :cmd="cmd"
+                        @calEvent="handleCalEvent"
+                    />
                 </div>
             </div>
         </div>
@@ -73,6 +78,29 @@ function generateDates(firstDate, times) {
 
 let calSeq = 0
 
+let calEventHandler = (function() {
+    return {
+        navDate(arg) {
+            if (arg.dir) {
+                let firstDate = new Date(this.dates[0])
+                if (arg.dir === "prev") {
+                    firstDate.setMonth(firstDate.getMonth() - 1)
+                } else if (arg.dir === "next") {
+                    firstDate.setMonth(firstDate.getMonth() + 1)
+                } else {
+                    firstDate = firstDate + 1
+                }
+                this.dates = generateDates(firstDate, this.dates.length)
+                this.cmd = {
+                    action: "changeDate",
+                    args: this.dates,
+                }
+                return
+            }
+        },
+    }
+})()
+
 export default {
     name: "App",
     components: {
@@ -121,6 +149,10 @@ export default {
                     args: this.dates,
                 }
             })
+        },
+        handleCalEvent(event) {
+            calSeq = 0
+            calEventHandler[event.name].call(this, event.arg)
         },
         incrCalSeq() {
             return calSeq++

@@ -2,10 +2,20 @@
     <div>
         <div>
             <div class="year-month">{{ yearStr }}/{{ monthStr }}</div>
+
             <div class="nav">
-                <span @click="getApi().prev()">prev</span> /
-                <span @click="getApi().today()">today</span> /
-                <span @click="getApi().next()">next</span>
+                <span
+                    v-for="action in ['prev', 'today', 'next']"
+                    :key="action"
+                    @click="
+                        emitEvent({
+                            name: 'navDate',
+                            arg: { dir: action, seq: seq },
+                        })
+                    "
+                >
+                    {{ action }}
+                </span>
             </div>
         </div>
 
@@ -76,8 +86,10 @@ export default {
         getApi: function() {
             return this.$refs.fullCalendar.getApi()
         },
+        emitEvent: function(arg) {
+            this.$emit("calEvent", arg)
+        },
         exeCmd: function() {
-            console.log(1234, this.cmd, 5678)
             this.cmd.action &&
                 cmdExecutor[this.cmd.action].call(this, this.cmd.args)
         },
