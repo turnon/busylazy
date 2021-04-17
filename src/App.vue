@@ -124,6 +124,7 @@ export default {
         }
     },
     mounted() {
+        // 读取数据库
         const readDb = "readDb"
         ipcRenderer.send(readDb, null)
         ipcRenderer.on(readDb, (_, jsonData) => {
@@ -131,6 +132,27 @@ export default {
             this.events = scheduleToEvents(jsonData.schedule)
             this.cmd = { action: "changeDate", args: this.dates }
             this.reloadCals()
+        })
+
+        // 监听窗口高度
+        const checkHeight = "checkHeight"
+        let currentHeight = 0
+        ;(function loopCheckHeight() {
+            setTimeout(loopCheckHeight, 1000)
+            ipcRenderer.send(checkHeight, null)
+        })()
+        ipcRenderer.on(checkHeight, (_, newHeight) => {
+            if (currentHeight === newHeight) {
+                return
+            }
+            console.log(`${new Date()}: new height ${newHeight}`)
+
+            currentHeight = newHeight
+            let verticalCount = this.layout.current.split("x")[1]
+            this.cmd = {
+                action: "changeHeight",
+                args: ((currentHeight - 20) * 0.88) / verticalCount,
+            }
         })
     },
     methods: {

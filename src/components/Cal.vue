@@ -35,6 +35,9 @@ let cmdExecutor = (function() {
         changeDate(dates) {
             this.getApi().gotoDate(dates[this.seq])
         },
+        changeHeight(height) {
+            this.getApi().setOption("height", height)
+        },
     }
 })()
 
@@ -68,7 +71,6 @@ export default {
                 plugins: [dayGridPlugin, interactionPlugin],
                 events: this.events,
                 initialView: "dayGridMonth",
-                aspectRatio: 1,
                 headerToolbar: false,
                 datesSet: this.datesSet,
             },
@@ -91,6 +93,7 @@ export default {
         },
         exeCmd: function() {
             this.cmd.action &&
+                cmdExecutor[this.cmd.action] &&
                 cmdExecutor[this.cmd.action].call(this, this.cmd.args)
         },
     },
