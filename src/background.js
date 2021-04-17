@@ -28,6 +28,20 @@ function createComm() {
   })
 }
 
+// 监听窗口高度
+function createHeightListener(win) {
+  let winHeight = win.getContentSize()[1]
+
+  win.on('resize', () => {
+    winHeight = win.getContentSize()[1]
+  })
+
+  const checkHeight = 'checkHeight'
+  ipcMain.on(checkHeight, (event, arg) => {
+    event.reply(checkHeight, winHeight)
+  })
+}
+
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
@@ -45,6 +59,7 @@ async function createWindow() {
   win.setMenu(null)
 
   createComm()
+  createHeightListener(win)
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode

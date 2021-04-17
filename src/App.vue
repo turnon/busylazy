@@ -114,6 +114,7 @@ export default {
                 vertical: 1,
             },
             dates: [dateStr(new Date())],
+            currentHeight: 0,
             layout: {
                 options: ["1x1", "2x1", "3x1", "1x2", "2x2", "3x2"],
                 current: "1x1",
@@ -124,6 +125,7 @@ export default {
         }
     },
     mounted() {
+        // 读取数据库
         const readDb = "readDb"
         ipcRenderer.send(readDb, null)
         ipcRenderer.on(readDb, (_, jsonData) => {
@@ -132,8 +134,31 @@ export default {
             this.cmd = { action: "changeDate", args: this.dates }
             this.reloadCals()
         })
+
+        // 监听窗口高度
+        const checkHeight = "checkHeight"
+        ;(function loopCheckHeight() {
+            setTimeout(loopCheckHeight, 1000)
+            ipcRenderer.send(checkHeight, null)
+        })()
+        ipcRenderer.on(checkHeight, (_, newHeight) => {
+            if (this.currentHeight === newHeight) {
+                return
+            }
+            console.log(`${new Date()}: new height ${newHeight}`)
+
+            this.currentHeight = newHeight
+            this.cmd = {
+                action: "changeHeight",
+                args: this.figureOutCalsHeight(),
+            }
+        })
     },
     methods: {
+        figureOutCalsHeight() {
+            let verticalCount = this.layout.current.split("x")[1]
+            return ((this.currentHeight - 20) * 0.88) / verticalCount
+        },
         changeLayout(layoutStr) {
             this.reloadCals(() => {
                 this.layout.current = layoutStr
@@ -144,10 +169,16 @@ export default {
                 this.calerdarsLayout.vertical = v
                 this.calendarWidth = `${90 / h}%`
                 this.dates = generateDates(this.dates[0], h * v)
-                this.cmd = {
-                    action: "changeDate",
-                    args: this.dates,
-                }
+                this.cmd = [
+                    {
+                        action: "changeDate",
+                        args: this.dates,
+                    },
+                    {
+                        action: "changeHeight",
+                        args: this.figureOutCalsHeight(),
+                    },
+                ]
             })
         },
         handleCalEvent(event) {
