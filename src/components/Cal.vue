@@ -51,9 +51,9 @@ export default {
             default: 0,
         },
         cmd: {
-            type: Object,
+            type: [Object, Array],
             default: function() {
-                return { action: null, args: null }
+                return null
             },
         },
         events: {
@@ -92,9 +92,11 @@ export default {
             this.$emit("calEvent", arg)
         },
         exeCmd: function() {
-            this.cmd.action &&
-                cmdExecutor[this.cmd.action] &&
-                cmdExecutor[this.cmd.action].call(this, this.cmd.args)
+            let cmdArr = this.cmd instanceof Array ? this.cmd : [this.cmd]
+            cmdArr.forEach((cmd) => {
+                let executor = cmdExecutor[cmd.action]
+                executor && executor.call(this, cmd.args)
+            })
         },
     },
     mounted() {
